@@ -1,27 +1,97 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的越南 App</title>
-    
-    <meta property="og:title" content="我的越南 App">
-    <meta property="og:description" content="點擊立即開啟我的越南 App 專案">
-    <meta property="og:image" content="https://cdn.phototourl.com/free/2026-07-11-c599f644-f6d2-4cfa-a05c-42a21333f5cf.jpg">
-    <meta property="og:type" content="website">
+import React, { useState, useEffect } from 'react';
 
-    <meta http-equiv="refresh" content="0;url=https://cosmic-bublanina-69d56c.netlify.app/#t=eyJlbmQiOiIyMDI2LTA3LTI2IiwicmV2IjoxNTIsImNpdHkiOiJEYSBOYW5nIiwiZGF5cyI6W3sic3BvdHMiOlt7Im4iOiLpq5jpm4TlsI/muK/mqZ/loLTvvIjlh7rnmbzvvIkiLCJpZCI6ImlkX2Q2bTU3dWcwbGsiLCJsbCI6Ikthb2hzaXVuZyBJbnRlcm5hdGlvbmFsIEFpcnBvcnQiLCJsYXQiOjIyLjU3NzEsImxuZyI6MTIwLjM0OTgsImRlc2MiOiLlj7DngaPomY7oiKogSVQgNTg1772c6auY6ZuE77yN5bO05rivIDE2OjAwLTE3OjM144CCIiwia2luZCI6InNpZ2h0Iiwic3RheSI6Iui1t+mjmyAxNjowMCIsInRpbWUiOiIxMjowMCIsIm5vZGVzIjpbXSwidHJhbnMiOiJjYXIiLCJkZXRhaWwiOiLlu7rorbDmj5ml6kgNOWwj+aZguaKtemBlOi+pueQhuWgseWIsOiIh+ihjOadjuiol+mBi+OAguihjOWLlembu+a6kOOAgemLsOmbu+axoOWLmeW/hemaqOi6q++8jOS4jeWPr+iol+mBi+OAgiJ9LHsibiI6IuWztOa4r+Wci+mam+apn+WgtCBEYSBOYW5nIEludGVybmF0aW9uYWwgQWlycG9ydCIsImlkIjoiaWRfZzNwM2ZtcDBsbCIsImxsIjoiRGEgTmFuZyBJbnRlcm5hdGlvbmFsIEFpcnBvcnQiLCJsYXQiOjE2LjA0MzksImxuZyI6MTA4LjE5OTQsImRlc2MiOiLkuIvpo5vmqZ/jgIHlh7rpl5zoh7PkuIrou4rpoJDoqIggMSDlsI/mmYIvvJvliY3lvoA0OCDlsI/mmYIiwia2luZCI6InNpZ2h0Iiwic3RheSI6Iue0hDHlsI/mmYIiLCJ0aW1lIjoiMTc6MzUiLCJub2RlcyI6W30sInRyYW5zIjoiY2FyIiwiZGV0YWlsIjoiIn1dLCJ0aXRsZSI6IkRheTHvvIg3LzE5IOmAseaXpe+8ieiQveWcsOWztOa4r++8iSJ9XX0=">
-</head>
-<body>
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif; color: #666;">
-        <h2>正在前往越南 App，請稍候...</h2>
-        <p>如果網頁沒有自動跳轉，請<a id="direct-link" href="#">點擊此處</a>。</p>
+export default function App() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    try {
+      const hash = window.location.hash;
+      if (hash && hash.includes('t=')) {
+        const token = hash.split('t=')[1];
+        // 解碼 Base64 資料 (支援 UTF-8 中文)
+        const jsonString = decodeURIComponent(
+          atob(token)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const parsedData = JSON.parse(jsonString);
+        setData(parsedData);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error("解析失敗:", err);
+      setError("行程資料解析失敗，請確認網址是否完整！");
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', color: '#fff' }}>
+        <h2>行程載入中...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', color: '#ff6b6b' }}>
+        <h2>⚠️ {error}</h2>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', color: '#fff' }}>
+        <h2>未找到行程資料</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://cdn.phototourl.com/free/2026-07-11-a9c187d1-3973-49f5-b6e9-ef2a31943904.jpg")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        color: '#ffffff',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        padding: '20px'
+      }}
+    >
+      <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: 'rgba(0, 0, 0, 0.65)', padding: '24px', borderRadius: '16px', backdropFilter: 'blur(8px)' }}>
+        <h1 style={{ textAlign: 'center', color: '#ffd166', marginBottom: '8px' }}>
+          {data.title || "越南旅遊行程"}
+        </h1>
+        <p style={{ textAlign: 'center', opacity: 0.8, marginBottom: '24px' }}>
+          出發日期：{data.start} ～ {data.end}
+        </p>
+
+        {data.days && data.days.map((day, dIdx) => (
+          <div key={dIdx} style={{ marginBottom: '32px', backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: '16px', borderRadius: '12px' }}>
+            <h2 style={{ borderBottom: '2px solid #ffd166', paddingBottom: '8px', color: '#ffd166' }}>
+              {day.title || `Day ${dIdx + 1}`}
+            </h2>
+
+            {day.spots && day.spots.map((spot, sIdx) => (
+              <div key={sIdx} style={{ margin: '16px 0', padding: '12px', backgroundColor: 'rgba(0, 0, 0, 0.3)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                  <span style={{ fontSize: '1.1em', color: '#4ecdc4' }}>{spot.time} {spot.n}</span>
+                  <span style={{ fontSize: '0.9em', opacity: 0.8 }}>停留：{spot.stay}</span>
+                </div>
+                {spot.desc && <p style={{ margin: '8px 0 4px 0', fontSize: '0.95em' }}>{spot.desc}</p>}
+                {spot.detail && <p style={{ margin: '4px 0', fontSize: '0.85em', color: '#ddd' }}>💡 {spot.detail}</p>}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
-
-    <script>
-        var targetUrl = "https://cosmic-bublanina-69d56c.netlify.app/#t=eyJlbmQiOiIyMDI2LTA3LTI2IiwicmV2IjoxNTIsImNpdHkiOiJEYSBOYW5nIiwiZGF5cyI6W3sic3BvdHMiOlt7Im4iOiLpq5jpm4TlsI/muK/mqZ/loLTvvIjlh7rnmbzvvIkiLCJpZCI6ImlkX2Q2bTU3dWcwbGsiLCJsbCI6Ikthb2hzaXVuZyBJbnRlcm5hdGlvbmFsIEFpcnBvcnQiLCJsYXQiOjIyLjU3NzEsImxuZyI6MTIwLjM0OTgsImRlc2MiOiLlj7DngaPomY7oiKogSVQgNTg1772c6auY6ZuE77yN5bO05rivIDE2OjAwLTE3OjM144CCIiwia2luZCI6InNpZ2h0Iiwic3RheSI6Iui1t+mjmyAxNjowMCIsInRpbWUiOiIxMjowMCIsIm5vZGVzIjpbXSwidHJhbnMiOiJjYXIiLCJkZXRhaWwiOiLlu7rorbDmj5ml6kgNOWwj+aZguaKtemBlOi+pueQhuWgseWIsOiIh+ihjOadjuiol+mBi+OAguihjOWLlembu+a6kOOAgemLsOmbu+axoOWLmeW/hemaqOi6q++8jOS4jeWPr+iol+mBi+OAgiJ9LHsibiI6IuWztOa4r+Wci+mam+apn+WgtCBEYSBOYW5nIEludGVybmF0aW9uYWwgQWlycG9ydCIsImlkIjoiaWRfZzNwM2ZtcDBsbCIsImxsIjoiRGEgTmFuZyBJbnRlcm5hdGlvbmFsIEFpcnBvcnQiLCJsYXQiOjE2LjA0MzksImxuZyI6MTA4LjE5OTQsImRlc2MiOiLkuIvpo5vmqZ/jgIHlh7rpl5zoh7PkuIrou4rpoJDoqIggMSDlsI/mmYIvvJvliY3lvoA0OCDlsI/mmYIiwia2luZCI6InNpZ2h0Iiwic3RheSI6Iue0hDHlsI/mmYIiLCJ0aW1lIjoiMTc6MzUiLCJub2RlcyI6W30sInRyYW5zIjoiY2FyIiwiZGV0YWlsIjoiIn1dLCJ0aXRsZSI6IkRheTHvvIg3LzE5IOmAseaXpe+8ieiQveWcsOWztOa4r++8iSJ9XX0=";
-        document.getElementById("direct-link").href = targetUrl;
-        window.location.href = targetUrl;
-    </script>
-</body>
-</html>
+  );
+}

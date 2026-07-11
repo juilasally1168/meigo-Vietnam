@@ -98,21 +98,4 @@
                       <span class="spot-name">📍 ${spot.time || ''} ${spot.n || ''}</span>
                       ${spot.stay ? `<span class="spot-stay">${spot.stay}</span>` : ''}
                     </div>
-                    ${spot.desc ? `<div class="spot-desc">${spot.desc}</div>` : ''}
-                    ${spot.detail ? `<div class="spot-detail">💡 ${spot.detail}</div>` : ''}
-                  </div>
-                `;
-              });
-            }
-            html += `</div>`;
-          });
-        }
-
-        appDiv.innerHTML = html;
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  </script>
-</body>
-</html>
+                    ${spot.desc ? `<div class="spot-desc">${spot.desc}</div>` :
